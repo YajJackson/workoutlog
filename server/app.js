@@ -9,6 +9,7 @@ User.sync(); // sync({ force: true }), to drop then create each time the app sta
 app.use(bodyParser.json());
 app.use(require('./middleware/headers'));
 app.use('/api/user', require('./routes/user'))
+app.use('/api/login', require('./routes/session'))
 app.use('/api/test', (req, res) => res.send('Test 3'))
 
 app.listen(3000, function(){
