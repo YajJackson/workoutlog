@@ -19,7 +19,7 @@ $(function(){
 
       signup.done(function(data){
         WorkoutLog.setAuthHeader(data.sessionToken)
-
+        console.log('User created: ', data.sessionToken)
         $(signup_modal).modal('hide')
         $('.disabled').removeClass('disabled')
         $(loginTab).text('Logout')

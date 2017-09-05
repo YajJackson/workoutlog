@@ -13,6 +13,7 @@ app.use(require('./middleware/headers'));
 app.use(require('./middleware/validate-session'))
 app.use('/api/user', require('./routes/user'))
 app.use('/api/login', require('./routes/session'))
+app.use('/api/defintion' require('./routes/definition'))
 app.use('/api/test', (req, res) => res.send('Test 3'))
 
 app.listen(3000, function(){
