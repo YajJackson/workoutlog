@@ -26,7 +26,46 @@ $(function(){
       }).fail(function(){
         $(su_error).text('There was an issue with sign up.').show()
       })
+    },
+
+    login: function(){
+      let username = $('#li_username').val()
+      let password = $('#li_password').val()
+      let user = {
+        user: {
+          username: username,
+          password: password
+        }
+      }
+
+      let login = $.ajax({
+        type: 'POST',
+        url: WorkoutLog.API_BASE+'login',
+        data: JSON.stringify(user),
+        contentType: 'application/json'
+      })
+
+      login.done(function(data){
+        if(data.sessionToken){
+          WorkoutLog.setAuthHeader(data.sessionToken)
+          $(login_modal).modal('hide')
+          $('.disabled').removeClass('disabled')
+          $(loginTab).text('Logout')
+        }
+      }).fail(function(){
+        $('#li_error').text('There was an issue with sign up').show();
+      })
+    },
+
+    loginout: function() {
+      if(window.localStorage.getItem('sessionToken')) {
+        window.localStorage.removeItem('sessionToken')
+        $(loginTab).text('Login')
+      }
     }
   })
+
+  $(loginButton).click(WorkoutLog.login)
   $(signupButton).click(WorkoutLog.signup)
+  $(loginTab).click(WorkoutLog.loginout)
 })
