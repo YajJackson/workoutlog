@@ -12,18 +12,5 @@ $(document).ready(function(){
   }).done(function(data){
     console.log(data)
   })
-
-  $.ajax({
-    type: 'POST',
-    url: 'http://localhost:3000/api/user',
-    data: {
-      "user": {
-        "name": 'sandman',
-        "password": 'Password2'
-      }
-    }
-  }).done(function(data){
-    console.log(data)
-  })
   
 })
