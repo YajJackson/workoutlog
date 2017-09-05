@@ -5,9 +5,22 @@ $(document).ready(function(){
   
   $.ajax({
     type: 'GET',
-    url: 'http://local:3000',
-    error: function(){
-      console.log('Oh no!')
+    url: 'http://localhost:3000/api/test',
+    error: function(err){
+      console.log('Oh no!', err)
+    }
+  }).done(function(data){
+    console.log(data)
+  })
+
+  $.ajax({
+    type: 'POST',
+    url: 'http://localhost:3000/api/user',
+    data: {
+      "user": {
+        "name": 'sandman',
+        "password": 'Password2'
+      }
     }
   }).done(function(data){
     console.log(data)
