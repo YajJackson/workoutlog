@@ -13,7 +13,7 @@ router.post('/', function(req, res) {
     passwordhash: bcrypt.hashSync(pass, 10)
 
   }).then(function(user){
-    var token = jwt.sign({id:user.id}, "secret", {expiresIn:86400})
+    var token = jwt.sign({id:user.id}, process.env.JWT_SECRET, {expiresIn:86400})
     res.json({
         user: user,
         message: 'user created',

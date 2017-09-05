@@ -5,11 +5,11 @@ const sequelize = require('../db.js')
 const User = sequelize.import('../models/user')
 
 router.post('/', (req, res) => {
-    User.findOne({ where: { username: req.body.user.username } }).then((user) => {
+    User.findOne({ where:{ username:req.body.user.username }}).then((user) => {
       if(user){
         bcrypt.compare(req.body.user.password, user.passwordhash, (err, matches) => {
           if(matches){
-            let token = jwt.sign({id:user.id}, 'secret', {expiresIn:86400})
+            let token = jwt.sign({id:user.id}, process.env.JWT_SECRET, {expiresIn:86400})
             res.json({
               user: user,
               message: 'Authentication Successful',
