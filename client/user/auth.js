@@ -1,71 +1,76 @@
-$(function(){
-  $.extend(WorkoutLog, {
-    signup: function(){
-      let password = $(su_password).val()
-      let username = $(su_username).val()
-      let user = {
-        user: {
-          username: username,
-          password: password
+$(function() {
+  $.extend( WorkoutLog, {
+     signup: function() {
+           var username = $("#su_username").val();
+           var password = $("#su_password").val();
+           var user = {user:  {username: username, password: password }};
+           var signup = $.ajax({
+              type: "POST", 
+              url: WorkoutLog.API_BASE + "user", 
+              data: JSON.stringify(user), 
+              contentType: "application/json"
+           });
+           signup.done(function(data) {
+              if (data.sessionToken) {
+                 WorkoutLog.setAuthHeader(data.sessionToken);
+                 console.log("You made it!");
+                 console.log(data.sessionToken);
+                 
+              }
+              $("#signup-modal").modal("hide");
+              $(".disabled").removeClass("disabled");
+            //  $("#loginout").text("Logout");
+              // go to define tab
+              //$('.nav-tabs a[href="#define"]').tab('show');
+           })
+           .fail(function() {
+              $("#su_error").text("There was an issue with your username").show();
+           });
+     },
+
+     //login
+
+     login: function() {
+      var username = $("#li_username").val();
+      var password = $("#li_password").val();
+      var user = {user:  {username: username, password: password }};
+      var login = $.ajax({
+        type: "POST", 
+        url: WorkoutLog.API_BASE + "login", 
+        data: JSON.stringify(user), 
+        contentType: "application/json"
+      });
+      login.done(function(data) {
+        if (data.sessionToken) {
+              WorkoutLog.setAuthHeader(data.sessionToken);
+              
         }
-      }
-      
-      let signup = $.ajax({
-        type:'POST',
-        url:`${WorkoutLog.API_BASE}user`,
-        data: JSON.stringify(user),
-        contentType: 'application/json'
+        // TODO: add logic to set user and auth token	
+        $("#login-modal").modal("hide");
+        $(".disabled").removeClass("disabled");
+        $("#loginout").text("Logout");
       })
+      .fail(function() {
+        $("#li_error").text("There was an issue with your username or password").show();
+         });
+     },
 
-      signup.done(function(data){
-        WorkoutLog.setAuthHeader(data.sessionToken)
-        console.log('User created: ', data.sessionToken)
-        $(signup_modal).modal('hide')
-        $('.disabled').removeClass('disabled')
-        $(loginTab).text('Logout')
-      }).fail(function(){
-        $(su_error).text('There was an issue with sign up.').show()
-      })
-    },
-
-    login: function(){
-      let username = $('#li_username').val()
-      let password = $('#li_password').val()
-      let user = {
-        user: {
-          username: username,
-          password: password
+     //logout
+     loginout: function() {
+        if (window.localStorage.getItem("sessionToken")) {
+           window.localStorage.removeItem("sessionToken");
+           $("#loginout").text("Login");
         }
-      }
+     }
+  });
 
-      let login = $.ajax({
-        type: 'POST',
-        url: WorkoutLog.API_BASE+'login',
-        data: JSON.stringify(user),
-        contentType: 'application/json'
-      })
+  // bind events
+   $("#login").on("click", WorkoutLog.login);
+   $("#signup").on("click", WorkoutLog.signup);
+  $("#loginout").on("click", WorkoutLog.loginout);
 
-      login.done(function(data){
-        if(data.sessionToken){
-          WorkoutLog.setAuthHeader(data.sessionToken)
-          $(login_modal).modal('hide')
-          $('.disabled').removeClass('disabled')
-          $(loginTab).text('Logout')
-        }
-      }).fail(function(){
-        $('#li_error').text('There was an issue with sign up').show();
-      })
-    },
+  if (window.localStorage.getItem("sessionToken")) {
+     $("#loginout").text("Logout");
+  }
 
-    loginout: function() {
-      if(window.localStorage.getItem('sessionToken')) {
-        window.localStorage.removeItem('sessionToken')
-        $(loginTab).text('Login')
-      }
-    }
-  })
-
-  $(loginButton).click(WorkoutLog.login)
-  $(signupButton).click(WorkoutLog.signup)
-  $(loginTab).click(WorkoutLog.loginout)
-})
+});

@@ -4,12 +4,11 @@ var User = sequelize.import('../models/user.js')
 var Definition = sequelize.import('../models/definition.js')
 
 router.post('/', function(req,res){
-  // variables
+
   var description = req.body.definition.desc
   var logType = req.body.definition.type
   var owner = req.user.id
 
-  // methods
   Definiton.create({
     description: description,
     logType: logType,
@@ -23,14 +22,12 @@ router.post('/', function(req,res){
     function throwErr(err){
       res.send(500,err.message)
     }
-
-    // error function
   )
 })
 
 router.get('/', function(req, res){
   var userid = req.user.id
-  Defintion.findAll({
+  Definition.findAll({
     where: {owner: userid}
   }).then(
     function success(data){
